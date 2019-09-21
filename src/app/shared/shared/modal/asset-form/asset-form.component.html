@@ -1,0 +1,51 @@
+<form nz-form [formGroup]="assetForm" (ngSubmit)="submitForm()" [nzLayout]="'vertical'">
+    <nz-form-item>
+        <nz-form-label [nzSpan]="10" nzRequired>Nom du bien :</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback nzErrorTip="Le nom du bien est obligatoire">
+            <input nz-input formControlName="name" placeholder="Exemple : Voiture" />
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="10" nzRequired>Date d'acquisition :</nz-form-label>
+        <nz-date-picker formControlName="acquisitionDate"></nz-date-picker>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="10" nzRequired>Montant de l'acquisition :</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback nzErrorTip="Le montant est obligatoire">
+            <input nz-input formControlName="acquisitionPrice" placeholder="Exemple : 2000" />
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <label nz-checkbox formControlName="priceIsTtc">Le montant est TTC</label>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="10" nzRequired>Durée d'utilisation prévue (en années):</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback nzErrorTip="La durée d'utilisation est obligatoire">
+            <!-- <input nz-input formControlName="economicDuration" placeholder="Exemple : 5" /> -->
+            <nz-input-number formControlName="economicDuration" [nzMin]="3" [nzStep]="1"></nz-input-number>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="10" nzRequired>Type d'amortissement:</nz-form-label>
+        <nz-select style="width: 120px;" formControlName="amoritizationType" nzPlaceHolder="Choississez le type">
+            <nz-option nzValue="linear" nzLabel="Linéaire"></nz-option>
+            <nz-option nzValue="degressive" nzLabel="Degressif"></nz-option>
+        </nz-select>
+    </nz-form-item>
+    <nz-form-item>
+        <label nz-checkbox formControlName="isSold">Le bien sera t-il cédé ?</label>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="10">Date de cession:</nz-form-label>
+        <nz-date-picker formControlName="cessionDate"></nz-date-picker>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-control [nzSpan]="12">
+            <button nz-button nzType="default" (click)="cancelModal()">Annuler</button>
+        </nz-form-control>
+        <nz-form-control [nzSpan]="12">
+            <button nz-button nzType="primary" type="submit" [nzLoading]="isLoading">Enregistrer</button>
+        </nz-form-control>
+    </nz-form-item>
+</form>

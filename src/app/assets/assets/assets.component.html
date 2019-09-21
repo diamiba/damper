@@ -1,1 +1,38 @@
-<p>assets works!</p>
+<!-- <nz-page-header nzTitle="Page Title">
+    <nz-page-header-content>
+        <div class="wrap">
+            <div class="content">
+                <div class="content">
+                    <p nz-paragraph>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Earum fuga ut praesentium dolorum amet
+                        placeat necessitatibus dolorem ab, magnam facere, minus laboriosam magni, repellendus
+                        perferendis expedita fugiat culpa? Debitis, nemo.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </nz-page-header-content>
+</nz-page-header> -->
+<div class="text-center my-1">
+    <button nz-button nzSize="large" nzType="primary" class="mx-auto" (click)="newAsset()">Ajouter une
+        immobilisation</button>
+</div>
+<nz-list class="demo-loadmore-list" [nzDataSource]="dataService.assets$ | async" [nzItemLayout]="'horizontal'" [nzLoading]="isLoading"
+    [nzRenderItem]="item">
+    <ng-template #item let-item>
+        <nz-list-item [nzContent]="" [nzActions]="isLoading ? '' : [seeAction, moreAction, deleteAction]">
+            <nz-skeleton [nzAvatar]="true" [nzActive]="true" [nzTitle]="false" [nzLoading]="isLoading">
+                <ng-template #seeAction><a routerLink="details/{{item.id}}">voir</a></ng-template>
+                <ng-template #moreAction><a (click)="editAssetDetails(item)">modifier</a></ng-template>
+                <ng-template #deleteAction><a (click)="deleteAsset(item)">supprimer</a></ng-template>
+                <nz-list-item-meta [nzTitle]="nzTitle"
+                    nzDescription="Ajouté le {{item.addedDate | date:'EEEE d MMMM y, à HH\'h\'mm\'mn\''}}">
+                    <ng-template #nzTitle>
+                        <a routerLink="details/{{item.id}}">{{ item.name }}</a>
+                    </ng-template>
+                </nz-list-item-meta>
+            </nz-skeleton>
+        </nz-list-item>
+    </ng-template>
+</nz-list>

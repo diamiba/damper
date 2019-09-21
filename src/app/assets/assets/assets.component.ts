@@ -1,15 +1,39 @@
 import { Component, OnInit } from '@angular/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { ModalService } from 'src/app/shared/services/modal.service';
+import { DataService } from 'src/app/shared/services/data.service';
+import { UserAsset } from 'src/app/shared/interfaces/user-asset';
 
 @Component({
-  selector: 'app-assets',
-  templateUrl: './assets.component.html',
-  styleUrls: ['./assets.component.scss']
+    selector: 'app-assets',
+    templateUrl: './assets.component.html',
+    styleUrls: ['./assets.component.scss']
 })
 export class AssetsComponent implements OnInit {
 
-  constructor() { }
+    constructor(private modalService:ModalService, public dataService:DataService) { }
 
-  ngOnInit() {
-  }
+    list: UserAsset[];
+    isLoading = true;
+    ngOnInit() {
+        this.isLoading = false;
+        // this.dataService.assets$.subscribe((assetsList:UserAsset[])=>{
+        //     // console.log(assetsList);
+        //     this.list = assetsList;
+        //     this.isLoading = false;
+        // })
+        // console.log(this.dataService.assets$);
+    }
 
+    newAsset(){
+        this.modalService.openNewAssetDialog();
+    }
+
+    editAssetDetails(asset:any){
+        this.modalService.editAssetDialog(asset.id);
+    }
+
+    deleteAsset(asset:any){
+        this.modalService.confirmAssetDeletionDialog(asset.id);
+    }
 }

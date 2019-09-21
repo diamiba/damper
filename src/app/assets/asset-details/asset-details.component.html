@@ -1,0 +1,43 @@
+<!-- <nz-page-header nzBackIcon nzTitle="Informations sur le bien">
+</nz-page-header> -->
+<nz-descriptions nzTitle="Informations sur le bien">
+    <nz-descriptions-item nzTitle="Nom du bien">{{concernedItem.name}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Montant">{{concernedItem.acquisitionPrice}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Date d'acquisition">{{concernedItem.acquisitionDate | date:'EEEE d MMMM y'}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Durée d'utilisation prévue">{{concernedItem.economicDuration}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Type d'amortissement">{{concernedItem.amoritizationType}}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Date d'ajout">{{concernedItem.addedDate | date:'EEEE d MMMM y, à HH\'h\'mm\'mn\''}}</nz-descriptions-item>
+</nz-descriptions>
+
+<h3 class="table-title">Plan d'amortissement</h3>
+<nz-table #basicTable [nzData]="listOfData" [nzFrontPagination]=false>
+    <thead>
+        <tr>
+            <th>Année</th>
+            <th>Dotation Linéaire</th>
+            <th>Taux</th>
+            <th>Cumul Des Dotations</th>
+            <th>Valeur Nette d'amortissement</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of basicTable.data">
+            <td>{{ data.name }}</td>
+            <td>{{ data.age }}</td>
+            <td>{{ data.age }}</td>
+            <td>{{ data.age }}</td>
+            <td>{{ data.address }}</td>
+        </tr>
+    </tbody>
+</nz-table><br>
+<div class="text-center my-1">
+    <button nz-button nzType="primary" class="mx-auto">
+        <i nz-icon nzType="edit" nzTheme="fill"></i>Modifier les informations
+    </button>
+    <button nz-button nzType="primary" class="mx-auto">
+        <i nz-icon nzType="file-pdf" nzTheme="fill"></i>Exporter en PDF
+    </button>
+    <button nz-button nzType="danger" class="mx-auto">
+        <i nz-icon nzType="delete" nzTheme="fill"></i>Supprimer ce bien
+    </button>
+</div>

@@ -1,0 +1,4 @@
+<nz-modal [(nzVisible)]="isVisible" [nzTitle]=modalTitle (nzOnCancel)="handleCancel()"
+    (nzOnOk)="handleOk()" [nzOkLoading]="isOkLoading"  [nzFooter]=null>
+    <app-asset-form (modalClosed)="handleCancel($event)" *ngIf="createAsset" [newAsset]=newAsset [assetId]=assetId></app-asset-form>
+</nz-modal>

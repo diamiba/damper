@@ -1,5 +1,5 @@
 export interface UserAsset {
-    id:number;
+    id?:number;
     name:string;
     acquisitionDate:Date;
     economicDuration:number;
@@ -7,5 +7,6 @@ export interface UserAsset {
     isSold:boolean;
     priceIsTtc:boolean;
     cessionDate?:Date;
+    addedDate?:Date;
     amoritizationType:string;
 }
