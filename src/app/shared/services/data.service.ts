@@ -243,6 +243,7 @@ export class DataService {
     }
 
     addAsset(newAsset: UserAsset) {
+        newAsset.id = this.getNewAssetId();
         this.assets = [
             ...this.assets,
             newAsset
@@ -264,6 +265,10 @@ export class DataService {
             const index = this.assets.indexOf(asset);
             this.assets[index] = concernedAsset;
             this.assets = [...this.assets];
+            return true;
+        }
+        else{
+            return false;
         }
     }
 
@@ -271,20 +276,20 @@ export class DataService {
         this.assets = this.assets.filter(asset => asset.id !== assetId);
     }
 
-    private getLastAssetId(): number {
+    getNewAssetId():number{
         let lastAssetId = Number(localStorage.getItem('lastAssetId'));
-        if (isNullOrUndefined(lastAssetId)) {
-            localStorage.setItem('lastAssetId', '1');
-            lastAssetId = 1;
+        //if it is the first one, we create it
+        if (isNullOrUndefined(localStorage.getItem('lastAssetId'))) {
+            localStorage.setItem('lastAssetId', '200');
+            lastAssetId = 200;
+        }
+        else{
+            lastAssetId++;
+            localStorage.setItem('lastAssetId', String(lastAssetId));
         }
         return lastAssetId;
     }
 
-    setLastAssetId() {
-        let lastAssetId = this.getLastAssetId();
-        lastAssetId++;
-        localStorage.setItem('lastAssetId', String(lastAssetId));
-    }
 
 
 

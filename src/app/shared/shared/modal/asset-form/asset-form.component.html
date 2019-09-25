@@ -35,17 +35,17 @@
     <nz-form-item>
         <label nz-checkbox formControlName="isSold">Le bien sera t-il cédé ?</label>
     </nz-form-item>
-    <nz-form-item>
+    <nz-form-item *ngIf="assetIsSold">
         <nz-form-label [nzSpan]="10">Date de cession:</nz-form-label>
         <nz-date-picker formControlName="cessionDate"></nz-date-picker>
     </nz-form-item>
 
     <nz-form-item>
         <nz-form-control [nzSpan]="12">
-            <button nz-button nzType="default" (click)="cancelModal()">Annuler</button>
+            <button nz-button nzType="primary" type="submit" [nzLoading]="isLoading" [disabled]=assetForm.invalid>Enregistrer</button>
         </nz-form-control>
         <nz-form-control [nzSpan]="12">
-            <button nz-button nzType="primary" type="submit" [nzLoading]="isLoading">Enregistrer</button>
+            <button nz-button nzType="default" (click)="cancelModal()">Annuler</button>
         </nz-form-control>
     </nz-form-item>
 </form>
