@@ -1,43 +1,94 @@
-<!-- <nz-page-header nzBackIcon nzTitle="Informations sur le bien">
-</nz-page-header> -->
-<nz-descriptions nzTitle="Informations sur le bien">
-    <nz-descriptions-item nzTitle="Nom du bien">{{concernedItem.name}}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Montant">{{concernedItem.acquisitionPrice}}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Date d'acquisition">{{concernedItem.acquisitionDate | date:'EEEE d MMMM y'}}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Durée d'utilisation prévue">{{concernedItem.economicDuration}}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Type d'amortissement">{{concernedItem.amoritizationType}}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Date d'ajout">{{concernedItem.addedDate | date:'EEEE d MMMM y, à HH\'h\'mm\'mn\''}}</nz-descriptions-item>
-</nz-descriptions>
+<div *ngIf="!notFound">
+    <h2>Informations sur le bien</h2>
+    <!-- <nz-row [nzGutter]="16">
+        <nz-col [nzSpan]="12">
+            <nz-statistic [nzValue]="1949101 | number" [nzTitle]="'Active Users'"></nz-statistic>
+        </nz-col>
+        <nz-col [nzSpan]="12">
+            <nz-statistic [nzValue]="2016539.111 | number: '1.0-2'" [nzTitle]="'Account Balance (CNY)'"></nz-statistic>
+        </nz-col>
+    </nz-row> -->
+    <nz-descriptions>
+        <nz-descriptions-item nzTitle="Nom du bien">{{concernedItem.name}}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Montant">{{concernedItem.acquisitionPrice }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Date d'acquisition">{{concernedItem.acquisitionDate | date:'EEEE d MMMM y' }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Durée d'utilisation prévue">{{concernedItem.economicDuration }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Type d'amortissement">{{concernedItem.amoritizationType }}</nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Date d'ajout">
+            {{concernedItem.addedDate | date:'EEEE d MMMM y, à HH\'h\'mm\'mn\'' }}
+        </nz-descriptions-item>
+    </nz-descriptions>
+    <!-- <table>
+        <thead>
+            <tr>
+                <th>Nom du bien</th>
+                <th>Durée d'utilisation</th>
+                <th>Montant d'acquisition</th>
+                <th>Type d'amortissement</th>
+                <th>Date d'acquisition</th>
+                <th>Date d'ajout</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{concernedItem.name}}</td>
+                <td>{{concernedItem.acquisitionPrice }}</td>
+                <td>{{concernedItem.acquisitionDate | date:'d/MM/y' }}</td>
+                <td>{{concernedItem.economicDuration }}</td>
+                <td>{{concernedItem.amoritizationType }}</td>
+                <td>{{concernedItem.addedDate | date:'d/MM/y' }}</td>
+            </tr>
+        </tbody>
+    </table> -->
 
-<h3 class="table-title">Plan d'amortissement</h3>
-<nz-table #basicTable [nzData]="listOfData" [nzFrontPagination]=false>
-    <thead>
-        <tr>
-            <th>Année</th>
-            <th>Dotation Linéaire</th>
-            <th>Taux</th>
-            <th>Cumul Des Dotations</th>
-            <th>Valeur Nette d'amortissement</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let data of basicTable.data">
-            <td>{{ data.name }}</td>
-            <td>{{ data.age }}</td>
-            <td>{{ data.age }}</td>
-            <td>{{ data.age }}</td>
-            <td>{{ data.address }}</td>
-        </tr>
-    </tbody>
-</nz-table><br>
-<div class="text-center my-1">
-    <button nz-button nzType="primary" class="mx-auto">
-        <i nz-icon nzType="edit" nzTheme="fill"></i>Modifier les informations
-    </button>
-    <button nz-button nzType="primary" class="mx-auto">
-        <i nz-icon nzType="file-pdf" nzTheme="fill"></i>Exporter en PDF
-    </button>
-    <button nz-button nzType="danger" class="mx-auto">
-        <i nz-icon nzType="delete" nzTheme="fill"></i>Supprimer ce bien
+    <h3 class="table-title">Plan d'amortissement</h3>
+    <nz-table #basicTable [nzData]="listOfData" [nzFrontPagination]=false>
+        <thead>
+            <tr>
+                <th>Année</th>
+                <th>Dotation Linéaire</th>
+                <th>Taux</th>
+                <th>Cumul Des Dotations</th>
+                <th>Valeur Nette d'amortissement</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of basicTable.data">
+                <td>{{ data.name }}</td>
+                <td>{{ data.age }}</td>
+                <td>{{ data.age }}</td>
+                <td>{{ data.age }}</td>
+                <td>{{ data.address }}</td>
+            </tr>
+        </tbody>
+    </nz-table><br>
+    <div class="text-center my-1">
+        <button nz-button nzType="primary" class="mx-auto" (click)="editAssetDetails(concernedItem)">
+            <i nz-icon nzType="edit" nzTheme="fill"></i>Modifier les informations
+        </button>
+        <button nz-button nzType="primary" class="mx-auto">
+            <i nz-icon nzType="file-pdf" nzTheme="fill"></i>Exporter en PDF
+        </button>
+        <button nz-button nzType="primary" class="mx-auto" (click)="deleteAsset(concernedItem)">
+            <i nz-icon nzType="delete" nzTheme="fill"></i>Supprimer ce bien
+        </button>
+        <button nz-button nzType="primary" class="mx-auto" (click)="navSvc.gotoAllAssets()">
+                <i nz-icon nzType="caret-left" nzTheme="fill"></i>Retour
+        </button>
+    </div>
+</div>
+<div *ngIf="notFound" class="text-center">
+    <h3>Shit not found</h3>
+    <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus aperiam animi cupiditate similique eum
+        doloremque,
+        voluptates cum, inventore neque temporibus provident pariatur iste, tenetur excepturi! Eum quod perferendis
+        eaque
+        labore!
+    </p>
+    <button nz-button nzType="primary" class="mx-auto" (click)="navSvc.gotoAllAssets()">
+            <i nz-icon nzType="caret-left" nzTheme="fill"></i>Retour
     </button>
 </div>

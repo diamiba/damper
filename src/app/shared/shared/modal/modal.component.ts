@@ -2,6 +2,7 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd';
 import { ModalService } from '../../services/modal.service';
 import { AssetFormComponent } from './asset-form/asset-form.component';
+import { DataService } from '../../services/data.service';
 
 const NEW_ASSET = "Ajout d'un nouveau bien";
 const EDIT_ASSET = "Modification des informations d'un bien";
@@ -20,7 +21,7 @@ export class ModalComponent implements OnInit {
     isVisible = false;
     isOkLoading = false;
 
-    constructor(private nzModal: NzModalService, private modalService: ModalService) { }
+    constructor(private nzModal: NzModalService, private modalService: ModalService, private dataService:DataService) { }
 
 
     ngOnInit() {
@@ -101,10 +102,14 @@ export class ModalComponent implements OnInit {
             nzContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis ipsa minima ipsam dicta repellendus numquam vel, rerum excepturi est cupiditate. Saepe deleniti nisi ex. Vero voluptatibus consequuntur magnam atque ad.',
             nzOkText: 'Oui, supprimer',
             nzOkType: 'danger',
-            nzOnOk: () => console.log('OK'),
+            nzOnOk: () => this.doDeleteAsset(itemId),
             nzCancelText: 'Non',
             nzOnCancel: () => console.log('Cancel')
         });
+    }
+
+    doDeleteAsset(assetId:number){
+        this.dataService.removeAsset(assetId);
     }
 
 }

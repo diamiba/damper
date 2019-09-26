@@ -6,7 +6,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 
 import { AssetsRoutingModule } from './assets-routing.module';
 import { AssetsComponent } from './assets/assets.component';
-import { NzSkeletonModule, NzButtonModule, NzDescriptionsModule, NzTableModule, NzDividerModule, NzIconModule } from 'ng-zorro-antd';
+import { NzSkeletonModule, NzButtonModule, NzDescriptionsModule, NzTableModule, NzDividerModule, NzIconModule, NzStatisticModule, NzGridModule } from 'ng-zorro-antd';
 import { AssetDetailsComponent } from './asset-details/asset-details.component';
 import { SharedModule } from '../shared/shared/shared.module';
 import { RouterModule } from '@angular/router';
@@ -28,6 +28,8 @@ import { RouterModule } from '@angular/router';
     NzTableModule,
     NzDividerModule,
     NzIconModule,
+    NzStatisticModule,
+    NzGridModule,
     SharedModule
   ]
 })
