@@ -5,6 +5,8 @@ import { NavigationService } from 'src/app/shared/services/navigation.service';
 import { ActivatedRoute } from '@angular/router';
 import { ModalService } from 'src/app/shared/services/modal.service';
 import { isUndefined } from 'util';
+import { AssetDotation } from 'src/app/shared/interfaces/asset-dotation';
+import { ComputingService } from 'src/app/shared/services/computing.service';
 // import { Observable } from 'rxjs';
 
 @Component({
@@ -15,9 +17,10 @@ import { isUndefined } from 'util';
 export class AssetDetailsComponent implements OnInit, OnDestroy {
     notFound: boolean = false;
 
-    constructor(private dataService: DataService, private modalService: ModalService, public navSvc: NavigationService, private activatedRoute: ActivatedRoute) { }
-    concernedItem: any;
+    constructor(private dataService: DataService, private computeSvc: ComputingService, private modalService: ModalService, public navSvc: NavigationService, private activatedRoute: ActivatedRoute) { }
+    concernedItem: UserAsset;
     assetEvtSubscriber: any;
+    listOfData: AssetDotation[];
 
     ngOnInit() {
         this.notFound = false;
@@ -26,17 +29,34 @@ export class AssetDetailsComponent implements OnInit, OnDestroy {
         if (isUndefined(this.concernedItem)) {
             this.notFound = true;
         }
+        else {
+            this.listOfData = this.computeSvc.getAmortizations(this.concernedItem);
+            const todayDotations = this.computeSvc.getDotationsAsToday();
+            this.concernedItem.sumOfDotationsAsToday = 0;
+            if (!isUndefined(todayDotations)) {
+                this.concernedItem.sumOfDotationsAsToday = todayDotations;
+            }
+            console.log(this.concernedItem);
+
+        }
         // console.log(this.concernedItem);
         this.assetEvtSubscriber = this.dataService.assetDetailsUpdated.subscribe((newAssetDetails: { type: string, asset: UserAsset }) => {
             if (newAssetDetails.asset.id === this.concernedItem.id) {
                 if (newAssetDetails.type === "updated") {
                     this.concernedItem = newAssetDetails.asset;
+                    this.listOfData = this.computeSvc.getAmortizations(this.concernedItem);
+                    const todayDotations = this.computeSvc.getDotationsAsToday();
+                    this.concernedItem.sumOfDotationsAsToday = 0;
+                    if (!isUndefined(todayDotations)) {
+                        this.concernedItem.sumOfDotationsAsToday = todayDotations;
+                    }
                 }
                 else {
                     this.navSvc.gotoAllAssets();
                 }
             }
         })
+
     }
 
     editAssetDetails(asset: any) {

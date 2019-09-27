@@ -1,14 +1,17 @@
 <div *ngIf="!notFound">
     <h2>Informations sur le bien</h2>
-    <!-- <nz-row [nzGutter]="16">
-        <nz-col [nzSpan]="12">
-            <nz-statistic [nzValue]="1949101 | number" [nzTitle]="'Active Users'"></nz-statistic>
+    <nz-row [nzGutter]="16">
+        <nz-col [nzSpan]="8">
+            <nz-statistic [nzValue]="concernedItem.acquisitionPrice | number" [nzTitle]="'Valeur initiale'"></nz-statistic>
         </nz-col>
-        <nz-col [nzSpan]="12">
-            <nz-statistic [nzValue]="2016539.111 | number: '1.0-2'" [nzTitle]="'Account Balance (CNY)'"></nz-statistic>
+        <nz-col [nzSpan]="8">
+            <nz-statistic [nzValue]="concernedItem.sumOfDotationsAsToday | number: '1.0-2'" [nzTitle]="'Cumul des amortissements à ce jour'"></nz-statistic>
         </nz-col>
-    </nz-row> -->
-    <nz-descriptions>
+        <nz-col [nzSpan]="8">
+            <nz-statistic [nzValue]="(concernedItem.acquisitionPrice - concernedItem.sumOfDotationsAsToday) | number: '1.0-2'" [nzTitle]="'VNA à ce jour'"></nz-statistic>
+        </nz-col>
+    </nz-row>
+    <nz-descriptions nzTitle="Informations générales" nzBordered [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }" [nzSize]="'small'">
         <nz-descriptions-item nzTitle="Nom du bien">{{concernedItem.name}}</nz-descriptions-item>
         <nz-descriptions-item nzTitle="Montant">{{concernedItem.acquisitionPrice }}</nz-descriptions-item>
         <nz-descriptions-item nzTitle="Date d'acquisition">{{concernedItem.acquisitionDate | date:'EEEE d MMMM y' }}
@@ -49,6 +52,7 @@
             <tr>
                 <th>Année</th>
                 <th>Dotation Linéaire</th>
+                <th>Dotation</th>
                 <th>Taux</th>
                 <th>Cumul Des Dotations</th>
                 <th>Valeur Nette d'amortissement</th>
@@ -56,11 +60,12 @@
         </thead>
         <tbody>
             <tr *ngFor="let data of basicTable.data">
-                <td>{{ data.name }}</td>
-                <td>{{ data.age }}</td>
-                <td>{{ data.age }}</td>
-                <td>{{ data.age }}</td>
-                <td>{{ data.address }}</td>
+                <td>{{ data.year }}</td>
+                <td>{{ data.linearDotation | number: '1.0-2' }}</td>
+                <td>{{ data.value | number: '1.0-2' }}</td>
+                <td>{{ data.rate | percent}}</td>
+                <td>{{ data.sumOfDotations | number: '1.0-2' }}</td>
+                <td>{{ data.remainingDotations | number: '1.0-2' }}</td>
             </tr>
         </tbody>
     </nz-table><br>
@@ -75,7 +80,7 @@
             <i nz-icon nzType="delete" nzTheme="fill"></i>Supprimer ce bien
         </button>
         <button nz-button nzType="primary" class="mx-auto" (click)="navSvc.gotoAllAssets()">
-                <i nz-icon nzType="caret-left" nzTheme="fill"></i>Retour
+            <i nz-icon nzType="caret-left" nzTheme="fill"></i>Retour
         </button>
     </div>
 </div>
@@ -89,6 +94,6 @@
         labore!
     </p>
     <button nz-button nzType="primary" class="mx-auto" (click)="navSvc.gotoAllAssets()">
-            <i nz-icon nzType="caret-left" nzTheme="fill"></i>Retour
+        <i nz-icon nzType="caret-left" nzTheme="fill"></i>Retour
     </button>
 </div>

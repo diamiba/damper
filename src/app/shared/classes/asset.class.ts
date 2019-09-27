@@ -22,6 +22,5 @@ export class Asset {
     }
 
     logAssetDetails(){
-        console.log(this.assetDetails);
     }
 }

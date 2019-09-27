@@ -8,5 +8,6 @@ export interface UserAsset {
     priceIsTtc:boolean;
     cessionDate?:Date;
     addedDate?:Date;
+    sumOfDotationsAsToday?:number;
     amoritizationType:string;
 }

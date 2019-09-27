@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { UserAsset } from '../interfaces/user-asset';
 import { AssetDotation } from '../interfaces/asset-dotation';
 import { UserAssetDates } from '../interfaces/user-asset-dates';
-import {Asset} from '../classes/asset.class';
+import { Asset } from '../classes/asset.class';
 
 @Injectable({
     providedIn: 'root'
@@ -10,6 +10,7 @@ import {Asset} from '../classes/asset.class';
 export class ComputingService {
     defaultAsset: UserAsset;
     assetDates: UserAssetDates;
+    dotationsAsToday: number;
     assetDotations: AssetDotation[];
     acquisitionDate = new Date();
 
@@ -26,9 +27,6 @@ export class ComputingService {
             priceIsTtc: false,
         }
 
-        let regarde = new Asset(this.defaultAsset);
-        regarde.logAssetDetails();
-
         this.assetDates = {
             acquisitionYear: 0,
             acquisitionMonth: 0,
@@ -37,40 +35,49 @@ export class ComputingService {
         }
     }
 
-    computeLinearAmortization() {
-        console.log(this.defaultAsset);
-        this.prepareAssetDates(this.defaultAsset);
+    computeLinearAmortization(asset: UserAsset) {
+        // console.log(this.defaultAsset);
+        this.prepareAssetDates(asset);
 
-        let firstLinearDotation = this.computeFirstLinearDotation(this.defaultAsset);
-        let nextLinearDotations = this.computeNextLinearDotations(this.defaultAsset, firstLinearDotation);
-        let allDotations = this.computeLastLinearDotation(this.defaultAsset, nextLinearDotations);
-        console.log(allDotations);
+        let firstLinearDotation = this.computeFirstLinearDotation(asset);
+        let nextLinearDotations = this.computeNextLinearDotations(asset, firstLinearDotation);
+        let allDotations = this.computeLastLinearDotation(asset, nextLinearDotations);
+        return allDotations;
     }
-
 
     private prepareAssetDates(concernedAsset: UserAsset): UserAssetDates {
         this.assetDates.acquisitionYear = concernedAsset.acquisitionDate.getFullYear();
         this.assetDates.acquisitionMonth = concernedAsset.acquisitionDate.getMonth() + 1;
         this.assetDates.acquisitionDay = concernedAsset.acquisitionDate.getDate();
         this.assetDates.scheduledDuration = concernedAsset.economicDuration;
-        if (concernedAsset.isSold) {
-            this.assetDates.scheduledDuration = concernedAsset.cessionDate.getFullYear() - this.assetDates.acquisitionYear; //the asset is supposed to be sold during the year
-        }
-        console.log(this.assetDates);
+        // if (concernedAsset.isSold) {
+        //     this.assetDates.scheduledDuration = concernedAsset.cessionDate.getFullYear() - this.assetDates.acquisitionYear; //the asset is supposed to be sold during the year
+        // }
         return this.assetDates;
     }
 
-    computeDegressiveAmortization() {
+    public getAmortizations(asset: UserAsset): AssetDotation[] {
+        let computedDotations = [];
+        if (asset.amoritizationType == "linear") {
+            computedDotations = this.computeLinearAmortization(asset);
+        }
+        else {
+            computedDotations = this.computeDegressiveAmortization(asset);
+        }
+        return computedDotations;
+    }
+
+    computeDegressiveAmortization(asset: UserAsset) {
         // const today = new Date();
         // const endOfYear = new Date('12/31/'+today.getFullYear());
-        console.log(this.defaultAsset);
-        this.prepareAssetDates(this.defaultAsset);
-        console.log(this.assetDates);
+        // console.log(this.defaultAsset);
+        this.prepareAssetDates(asset);
+        // console.log(this.assetDates);
 
-        // console.log(this.computeFirstLinearDotation(this.defaultAsset));
-        let firstDotation = this.computeFirstDegressiveDotation(this.defaultAsset);
-        let nextDotations = this.computeNextDegressiveDotations(this.defaultAsset, firstDotation);
-        console.log(nextDotations);
+        // console.log(this.computeFirstLinearDotation(asset));
+        let firstDotation = this.computeFirstDegressiveDotation(asset);
+        let nextDotations = this.computeNextDegressiveDotations(asset, firstDotation);
+        return nextDotations;
     }
 
     getAmortizationRate(concernedAsset: UserAsset): number {
@@ -104,15 +111,19 @@ export class ComputingService {
     }
 
     computeNextLinearDotations(concernedAsset: UserAsset, firstDotation: AssetDotation): AssetDotation[] {
+        const today = new Date();
+        const currentYear = today.getFullYear();
         let remainingYears = this.assetDates.scheduledDuration - 1;
-        console.log(this.assetDates.scheduledDuration)
         let lastDotationsSum = firstDotation.sumOfDotations;
         let remainingDotations = firstDotation.remainingDotations;
         let dotationsList = [firstDotation];
         for (let i = 1; i <= remainingYears; i++) {
             const year = this.assetDates.acquisitionYear + i;
-            const rate = this.getAmortizationRate(concernedAsset);
             const amortization = this.getNormalLinearDotation(concernedAsset);
+            if (year === currentYear) {
+                this.dotationsAsToday = this.getTodayDotationsCumul(lastDotationsSum,amortization);
+            }
+            const rate = this.getAmortizationRate(concernedAsset);
             remainingDotations = remainingDotations - amortization;
             lastDotationsSum = lastDotationsSum + amortization;
 
@@ -132,30 +143,34 @@ export class ComputingService {
         let firstDotation = previousDotations[0];
         let lastComputedDotation = previousDotations[previousDotations.length - 1];
         const year = lastComputedDotation.year + 1;
+        const currentYear = new Date().getFullYear();
         const rate = this.getAmortizationRate(concernedAsset);
         let sumOfDotations = concernedAsset.acquisitionPrice;
         let remainingDotations = 0.00;
         let remainingDays = 365 - firstDotation.remainingDays;
         let value = 0;
-        if (concernedAsset.isSold) {
-            const cessionMonth = concernedAsset.cessionDate.getMonth() + 1;
-            const cessionYear = concernedAsset.cessionDate.getFullYear();
-            const cessionDay = concernedAsset.cessionDate.getDate();
-            const numberOfMonths = cessionMonth;
-            let daysOfUsage = cessionDay;
-            for (let i = 1; i < cessionMonth; i++) {
-                daysOfUsage += new Date(cessionYear, i, 0).getDate();
+        // if (concernedAsset.isSold) {
+        //     const cessionMonth = concernedAsset.cessionDate.getMonth() + 1;
+        //     const cessionYear = concernedAsset.cessionDate.getFullYear();
+        //     const cessionDay = concernedAsset.cessionDate.getDate();
+        //     const numberOfMonths = cessionMonth;
+        //     let daysOfUsage = cessionDay;
+        //     for (let i = 1; i < cessionMonth; i++) {
+        //         daysOfUsage += new Date(cessionYear, i, 0).getDate();
+        //     }
+        //     let dotationValue = this.getNormalLinearDotation(concernedAsset) * (daysOfUsage / 365);
+        //     value = Number(dotationValue.toFixed(2));
+        //     sumOfDotations = lastComputedDotation.sumOfDotations + value;
+        //     remainingDotations = concernedAsset.acquisitionPrice - sumOfDotations;
+        //     remainingDotations = Number(remainingDotations.toFixed(2));
+        //     remainingDays = daysOfUsage;
+        // }
+        // else {
+            if (year === currentYear) {
+                this.dotationsAsToday = this.getTodayDotationsCumul(lastComputedDotation.sumOfDotations,this.getNormalLinearDotation(concernedAsset));
             }
-            let dotationValue = this.getNormalLinearDotation(concernedAsset) * (daysOfUsage / 365);
-            value = Number(dotationValue.toFixed(2));
-            sumOfDotations = lastComputedDotation.sumOfDotations+value;
-            remainingDotations = concernedAsset.acquisitionPrice - sumOfDotations;
-            remainingDotations = Number(remainingDotations.toFixed(2));
-            remainingDays = daysOfUsage;
-        }
-        else{
             value = this.getNormalLinearDotation(concernedAsset) - firstDotation.value;
-        }
+        // }
 
         previousDotations[previousDotations.length] = {
             year: year,
@@ -211,11 +226,12 @@ export class ComputingService {
     computeNextDegressiveDotations(concernedAsset: UserAsset, firstDotation: AssetDotation): AssetDotation[] {
         let remainingYears = concernedAsset.economicDuration;
         let scheduledDuration = this.assetDates.scheduledDuration;
+        const currentYear = new Date().getFullYear();
         let compteur = remainingYears;
         let daysOfUsage = 0;
-        if(concernedAsset.isSold){
-            compteur = scheduledDuration;
-        }
+        // if (concernedAsset.isSold) {
+        //     compteur = scheduledDuration;
+        // }
         let lastDotationsSum = firstDotation.sumOfDotations;
         let remainingDotations = firstDotation.remainingDotations;
         let dotationsList = [firstDotation];
@@ -244,22 +260,25 @@ export class ComputingService {
                     amortization = switchValue * linearRate;
                 }
             }
-            if (concernedAsset.isSold && ((i+1)===scheduledDuration)) {
-                const cessionMonth = concernedAsset.cessionDate.getMonth() + 1;
-                const cessionYear = concernedAsset.cessionDate.getFullYear();
-                const cessionDay = concernedAsset.cessionDate.getDate();
-                const numberOfMonths = cessionMonth;
-                daysOfUsage = cessionDay;
-                for (let i = 1; i < cessionMonth; i++) {
-                    daysOfUsage += new Date(cessionYear, i, 0).getDate();
-                }
-                amortization = amortization * (daysOfUsage / 365);
+            // if (concernedAsset.isSold && ((i + 1) === scheduledDuration)) {
+            //     const cessionMonth = concernedAsset.cessionDate.getMonth() + 1;
+            //     const cessionYear = concernedAsset.cessionDate.getFullYear();
+            //     const cessionDay = concernedAsset.cessionDate.getDate();
+            //     const numberOfMonths = cessionMonth;
+            //     daysOfUsage = cessionDay;
+            //     for (let i = 1; i < cessionMonth; i++) {
+            //         daysOfUsage += new Date(cessionYear, i, 0).getDate();
+            //     }
+            //     amortization = amortization * (daysOfUsage / 365);
 
-            }
+            // }
             amortization = Number(amortization.toFixed(2));
             remainingDotations = remainingDotations - amortization;
             remainingDotations = Number(remainingDotations.toFixed(2));
             linearDotation = Number(linearDotation.toFixed(2));
+            if (year === currentYear) {
+                this.dotationsAsToday = this.getTodayDotationsCumul(lastDotationsSum,amortization);
+            }
             lastDotationsSum = lastDotationsSum + amortization;
             // let lastDotation = dotationsList[dotationsList.length - 1];
             // let degressiveDotation = remainingDotations*degressiveRate;
@@ -278,5 +297,25 @@ export class ComputingService {
 
         }
         return dotationsList;
+    }
+
+    private getTodayDotationsCumul(lastCumul: number, thisYearDotation: number): number {
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        let todayDotationCumul = 0;
+        console.log('Current Year :', currentYear);
+        let daysOfUsage = today.getDate();
+        const currentMonth = today.getMonth() + 1;
+        for (let i = 1; i < currentMonth; i++) {
+            daysOfUsage += new Date(currentYear, i, 0).getDate();
+        }
+        const todayDotation = thisYearDotation * (daysOfUsage / 360);
+        todayDotationCumul = lastCumul + todayDotation;
+        console.log('Cumul des dotations à ce jour : '+todayDotationCumul);
+        return todayDotationCumul;
+    }
+
+    getDotationsAsToday(){
+        return this.dotationsAsToday;
     }
 }
