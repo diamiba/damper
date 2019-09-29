@@ -1,23 +1,19 @@
-<!-- <nz-page-header nzTitle="Page Title">
-    <nz-page-header-content>
-        <div class="wrap">
-            <div class="content">
-                <div class="content">
-                    <p nz-paragraph>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Earum fuga ut praesentium dolorum amet
-                        placeat necessitatibus dolorem ab, magnam facere, minus laboriosam magni, repellendus
-                        perferendis expedita fugiat culpa? Debitis, nemo.
-                    </p>
-                </div>
-            </div>
 
-        </div>
-    </nz-page-header-content>
-</nz-page-header> -->
 <div class="text-center my-1">
     <button nz-button nzSize="large" nzType="primary" class="mx-auto" (click)="newAsset()">Ajouter une
         immobilisation</button>
 </div>
+<nz-row [nzGutter]="16">
+        <nz-col [nzSpan]="8">
+            <nz-statistic [nzValue]="(dataService.totalAssetsValue$ | async).totalValue | number: '1.0-2'" [nzTitle]="'Valeur du parc immobilier'"></nz-statistic>
+        </nz-col>
+        <nz-col [nzSpan]="8">
+            <nz-statistic [nzValue]="(dataService.totalAssetsValue$ | async).dotationsAsToday | number: '1.0-2'" [nzTitle]="'Total des amortissements'"></nz-statistic>
+        </nz-col>
+        <nz-col [nzSpan]="8">
+            <nz-statistic [nzValue]="(dataService.totalAssetsValue$ | async).vna | number: '1.0-2'" [nzTitle]="'Valeur nette d\'ammortissement'"></nz-statistic>
+        </nz-col>
+    </nz-row>
 <nz-list class="demo-loadmore-list" [nzDataSource]="dataService.assets$ | async" [nzItemLayout]="'horizontal'" [nzLoading]="isLoading"
     [nzRenderItem]="item">
     <ng-template #item let-item>

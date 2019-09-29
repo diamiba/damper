@@ -57,6 +57,7 @@ export class ComputingService {
     }
 
     public getAmortizations(asset: UserAsset): AssetDotation[] {
+        this.dotationsAsToday = 0;
         let computedDotations = [];
         if (asset.amoritizationType == "linear") {
             computedDotations = this.computeLinearAmortization(asset);
@@ -303,7 +304,7 @@ export class ComputingService {
         const today = new Date();
         const currentYear = today.getFullYear();
         let todayDotationCumul = 0;
-        console.log('Current Year :', currentYear);
+        // console.log('Current Year :', currentYear);
         let daysOfUsage = today.getDate();
         const currentMonth = today.getMonth() + 1;
         for (let i = 1; i < currentMonth; i++) {
@@ -311,11 +312,25 @@ export class ComputingService {
         }
         const todayDotation = thisYearDotation * (daysOfUsage / 360);
         todayDotationCumul = lastCumul + todayDotation;
-        console.log('Cumul des dotations à ce jour : '+todayDotationCumul);
+        // console.log('Cumul des dotations à ce jour : '+todayDotationCumul);
         return todayDotationCumul;
     }
 
     getDotationsAsToday(){
         return this.dotationsAsToday;
+    }
+
+    getDotationsAsTodayOfAssets(assets:UserAsset[]){
+        let dotationsAsToday = 0;
+        // assets.forEach(function(asset){
+        // });
+        for(let i=0;i<assets.length;i++){
+            const asset = assets[i];
+            this.getAmortizations(asset);
+            const todayDotations = this.getDotationsAsToday();
+            // console.log(todayDotations);
+            dotationsAsToday += todayDotations;
+        }
+        return dotationsAsToday;
     }
 }

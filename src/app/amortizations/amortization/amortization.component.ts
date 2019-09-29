@@ -13,7 +13,7 @@ export class AmortizationComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.computingService.computeDegressiveAmortization();
+        // this.computingService.computeDegressiveAmortization();
         // this.computingService.computeLinearAmortization();
     }
 

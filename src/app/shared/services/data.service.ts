@@ -2,13 +2,14 @@ import { Injectable, EventEmitter, Output } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UserAsset } from '../interfaces/user-asset';
 import { isNullOrUndefined } from 'util';
+import { ComputingService } from './computing.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class DataService {
 
-    constructor() { }
+    constructor(private computingSvc:ComputingService) { }
 
     private defaultAsset: UserAsset = {
         name: "",
@@ -245,6 +246,11 @@ export class DataService {
             "addedDate": new Date("2015-11-10T08:27:19Z")
         }]);
 
+    private readonly _assets_value = new BehaviorSubject<any>(this.getTotalAssetsValue());
+    // private readonly _dotations_as_today = new BehaviorSubject<Number>(this.getTotalAssetsValue());
+
+    readonly totalAssetsValue$ = this._assets_value.asObservable();
+
     readonly assets$ = this._assets.asObservable();
 
     get assets(): UserAsset[] {
@@ -261,12 +267,38 @@ export class DataService {
             ...this.assets,
             newAsset
         ];
+        this.updateTotalAssetsValue();
     }
 
     getAsset(assetId: number): UserAsset {
         const concernedAsset = this.assets.find(asset => asset.id === assetId);
         // if(concernedAsset){}
         return concernedAsset;
+    }
+
+    private updateTotalAssetsValue(){
+        const totalValue = this.assets.reduce((acc, asset) => acc + Number(asset.acquisitionPrice), 0);
+        const dotationsAsToday = this.computingSvc.getDotationsAsTodayOfAssets(this.assets);
+        const assetsValue = {
+            "totalValue":totalValue,
+            "dotationsAsToday":dotationsAsToday,
+            "vna":totalValue - dotationsAsToday
+        }
+        // console.log(totalValue);
+        this._assets_value.next(assetsValue);
+        localStorage.setItem('totalAssetsValue',String(totalValue));
+        // console.log(dotationsAsToday);
+    }
+
+    getTotalAssetsValue(){
+        const totalValue = Number(localStorage.getItem('totalAssetsValue'));
+        const dotationsAsToday = this.computingSvc.getDotationsAsTodayOfAssets(this.assets);
+        const assetsValue = {
+            "totalValue":totalValue,
+            "dotationsAsToday":dotationsAsToday,
+            "vna":totalValue - dotationsAsToday
+        }
+        return assetsValue;
     }
 
     updateAssetDetails(concernedAsset: UserAsset) {
@@ -277,6 +309,7 @@ export class DataService {
             this.assets[index] = concernedAsset;
             this.assets = [...this.assets];
             this.assetDetailsUpdated.emit({type:"updated",asset:concernedAsset});
+            this.updateTotalAssetsValue();
             return true;
         }
         else {
@@ -288,6 +321,7 @@ export class DataService {
         const concernedAsset = this.getAsset(assetId);
         this.assets = this.assets.filter(asset => asset.id !== assetId);
         this.assetDetailsUpdated.emit({type:"deleted",asset:concernedAsset});
+        this.updateTotalAssetsValue();
     }
 
     getNewAssetId(): number {
