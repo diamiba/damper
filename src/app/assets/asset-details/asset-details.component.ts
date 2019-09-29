@@ -36,7 +36,7 @@ export class AssetDetailsComponent implements OnInit, OnDestroy {
             if (!isUndefined(todayDotations)) {
                 this.concernedItem.sumOfDotationsAsToday = todayDotations;
             }
-            console.log(this.concernedItem);
+            // console.log(this.concernedItem);
 
         }
         // console.log(this.concernedItem);
