@@ -99,7 +99,7 @@ export class ModalComponent implements OnInit {
     showDeleteConfirm(itemId: number): void {
         this.nzModal.confirm({
             nzTitle: 'Voulez-vous vraiment supprimer ce bien ?',
-            nzContent: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis ipsa minima ipsam dicta repellendus numquam vel, rerum excepturi est cupiditate. Saepe deleniti nisi ex. Vero voluptatibus consequuntur magnam atque ad.',
+            nzContent: 'La suppression sera définitive, sans possibilité de revenir en arrière. Etes-vous vraiment sûr ?',
             nzOkText: 'Oui, supprimer',
             nzOkType: 'danger',
             nzOnOk: () => this.doDeleteAsset(itemId),

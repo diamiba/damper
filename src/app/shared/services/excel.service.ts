@@ -48,7 +48,6 @@ export class ExcelService {
     }
 
     public exportAssetsList(assetsList:any){
-        console.log(assetsList);
         const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(assetsList);
         const workbook: XLSX.WorkBook = { Sheets: { 'Immobilisations': worksheet }, SheetNames: ['Immobilisations'] };
         const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });

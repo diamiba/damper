@@ -1,4 +1,4 @@
-<h2 class="text-center">Toutes vos immobilisations</h2>
+<h2>Toutes vos immobilisations</h2>
 <nz-row [nzGutter]="16">
     <nz-col [nzSpan]="8">
         <nz-statistic [nzValue]="(dataService.totalAssetsValue$ | async).totalValue | number: '1.0-2'"
@@ -19,7 +19,7 @@
                 <i nz-icon nzType="plus-square" nzTheme="fill"></i>
                 Ajouter une immobilisation</button>
         <button nz-button nzType="primary" class="mx-auto" (click)="exportAsXlsx()">
-                <i nz-icon nzType="file-excel" nzTheme="fill"></i>
+                <i nz-icon nzType="download" nzTheme="outline"></i>
                 Exporter la liste en xlsx</button>
     </div>
 <nz-list class="demo-loadmore-list" [nzDataSource]="dataService.assets$ | async" [nzItemLayout]="'horizontal'"
