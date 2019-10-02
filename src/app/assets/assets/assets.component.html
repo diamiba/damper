@@ -1,21 +1,29 @@
-
-<div class="text-center my-1">
-    <button nz-button nzSize="large" nzType="primary" class="mx-auto" (click)="newAsset()">Ajouter une
-        immobilisation</button>
-</div>
+<h2 class="text-center">Toutes vos immobilisations</h2>
 <nz-row [nzGutter]="16">
-        <nz-col [nzSpan]="8">
-            <nz-statistic [nzValue]="(dataService.totalAssetsValue$ | async).totalValue | number: '1.0-2'" [nzTitle]="'Valeur du parc immobilier'"></nz-statistic>
-        </nz-col>
-        <nz-col [nzSpan]="8">
-            <nz-statistic [nzValue]="(dataService.totalAssetsValue$ | async).dotationsAsToday | number: '1.0-2'" [nzTitle]="'Total des amortissements'"></nz-statistic>
-        </nz-col>
-        <nz-col [nzSpan]="8">
-            <nz-statistic [nzValue]="(dataService.totalAssetsValue$ | async).vna | number: '1.0-2'" [nzTitle]="'Valeur nette d\'ammortissement'"></nz-statistic>
-        </nz-col>
-    </nz-row>
-<nz-list class="demo-loadmore-list" [nzDataSource]="dataService.assets$ | async" [nzItemLayout]="'horizontal'" [nzLoading]="isLoading"
-    [nzRenderItem]="item">
+    <nz-col [nzSpan]="8">
+        <nz-statistic [nzValue]="(dataService.totalAssetsValue$ | async).totalValue | number: '1.0-2'"
+            [nzTitle]="'Valeur du parc immobilier'"></nz-statistic>
+    </nz-col>
+    <nz-col [nzSpan]="8">
+        <nz-statistic [nzValue]="(dataService.totalAssetsValue$ | async).dotationsAsToday | number: '1.0-2'"
+            [nzTitle]="'Total des amortissements'"></nz-statistic>
+    </nz-col>
+    <nz-col [nzSpan]="8">
+        <nz-statistic [nzValue]="(dataService.totalAssetsValue$ | async).vna | number: '1.0-2'"
+            [nzTitle]="'Valeur nette d\'ammortissement'"></nz-statistic>
+    </nz-col>
+</nz-row>
+<nz-divider></nz-divider>
+    <div class="text-center my-1">
+        <button nz-button nzType="primary" class="mx-auto" (click)="newAsset()">
+                <i nz-icon nzType="plus-square" nzTheme="fill"></i>
+                Ajouter une immobilisation</button>
+        <button nz-button nzType="primary" class="mx-auto" (click)="exportAsXlsx()">
+                <i nz-icon nzType="file-excel" nzTheme="fill"></i>
+                Exporter la liste en xlsx</button>
+    </div>
+<nz-list class="demo-loadmore-list" [nzDataSource]="dataService.assets$ | async" [nzItemLayout]="'horizontal'"
+    [nzLoading]="isLoading" [nzRenderItem]="item">
     <ng-template #item let-item>
         <nz-list-item [nzContent]="" [nzActions]="isLoading ? '' : [seeAction, moreAction, deleteAction]">
             <nz-skeleton [nzAvatar]="true" [nzActive]="true" [nzTitle]="false" [nzLoading]="isLoading">

@@ -3,6 +3,7 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { ModalService } from 'src/app/shared/services/modal.service';
 import { DataService } from 'src/app/shared/services/data.service';
 import { UserAsset } from 'src/app/shared/interfaces/user-asset';
+import { ExcelService } from 'src/app/shared/services/excel.service';
 
 @Component({
     selector: 'app-assets',
@@ -11,7 +12,7 @@ import { UserAsset } from 'src/app/shared/interfaces/user-asset';
 })
 export class AssetsComponent implements OnInit {
 
-    constructor(private modalService:ModalService, public dataService:DataService) { }
+    constructor(private modalService:ModalService, public dataService:DataService, private excelService:ExcelService) { }
 
     list: UserAsset[];
     isLoading = true;
@@ -35,5 +36,10 @@ export class AssetsComponent implements OnInit {
 
     deleteAsset(asset:any){
         this.modalService.confirmAssetDeletionDialog(asset.id);
+    }
+
+    exportAsXlsx(){
+        const assetsList = this.dataService.assets;
+        this.excelService.exportAssetsList(assetsList);
     }
 }

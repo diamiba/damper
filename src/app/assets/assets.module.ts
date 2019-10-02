@@ -14,23 +14,23 @@ import { RouterModule } from '@angular/router';
 
 
 @NgModule({
-  declarations: [AssetsComponent, AssetDetailsComponent],
-  imports: [
-    CommonModule,
-    AssetsRoutingModule,
-    NzPageHeaderModule,
-    NzListModule,
-    RouterModule,
-    NzSkeletonModule,
-    NzButtonModule,
-    NzModalModule,
-    NzDescriptionsModule,
-    NzTableModule,
-    NzDividerModule,
-    NzIconModule,
-    NzStatisticModule,
-    NzGridModule,
-    SharedModule
-  ]
+    declarations: [AssetsComponent, AssetDetailsComponent],
+    imports: [
+        CommonModule,
+        AssetsRoutingModule,
+        NzPageHeaderModule,
+        NzListModule,
+        RouterModule,
+        NzSkeletonModule,
+        NzButtonModule,
+        NzModalModule,
+        NzDescriptionsModule,
+        NzTableModule,
+        NzDividerModule,
+        NzIconModule,
+        NzStatisticModule,
+        NzGridModule,
+        SharedModule
+    ]
 })
 export class AssetsModule { }
