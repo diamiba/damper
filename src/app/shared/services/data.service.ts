@@ -9,7 +9,7 @@ import { ComputingService } from './computing.service';
 })
 export class DataService {
 
-    constructor(private computingSvc:ComputingService) { }
+    constructor(private computingSvc: ComputingService) { }
 
     private defaultAsset: UserAsset = {
         name: "",
@@ -21,7 +21,7 @@ export class DataService {
         amoritizationType: "linear",
     }
 
-    @Output() assetDetailsUpdated = new EventEmitter<{type:string, asset:UserAsset}>();
+    @Output() assetDetailsUpdated = new EventEmitter<{ type: string, asset: UserAsset }>();
 
     // assetsList = [
     //     {
@@ -101,48 +101,50 @@ export class DataService {
         return concernedAsset;
     }
 
-    private _getStoredAssets(){
+    private _getStoredAssets() {
         let storedAssets = JSON.parse(localStorage.getItem('storedAssets'));
-        storedAssets.forEach(asset => {
-            asset.acquisitionDate = new Date(asset.acquisitionDate);
-            asset.addedDate = new Date(asset.addedDate);
-            if(!isNullOrUndefined(asset.cessionDate)){
-                asset.cessionDate = new Date(asset.cessionDate);
-            }
-        });
-        if(isNullOrUndefined(storedAssets)){
+        if (isNullOrUndefined(storedAssets)) {
             storedAssets = [];
-            localStorage.setItem('storedAssets',JSON.stringify(storedAssets));
+            localStorage.setItem('storedAssets', JSON.stringify(storedAssets));
+        }
+        else {
+            storedAssets.forEach(asset => {
+                asset.acquisitionDate = new Date(asset.acquisitionDate);
+                asset.addedDate = new Date(asset.addedDate);
+                if (!isNullOrUndefined(asset.cessionDate)) {
+                    asset.cessionDate = new Date(asset.cessionDate);
+                }
+            });
         }
         return storedAssets;
     }
 
-    private _updateStoredAssets(assetsList:UserAsset[]){
-        localStorage.setItem('storedAssets',JSON.stringify(assetsList));
+    private _updateStoredAssets(assetsList: UserAsset[]) {
+        localStorage.setItem('storedAssets', JSON.stringify(assetsList));
     }
 
-    private updateTotalAssetsValue(){
+    private updateTotalAssetsValue() {
         const totalValue = this.assets.reduce((acc, asset) => acc + Number(asset.acquisitionPrice), 0);
         const dotationsAsToday = this.computingSvc.getDotationsAsTodayOfAssets(this.assets);
         const assetsValue = {
-            "totalValue":totalValue,
-            "dotationsAsToday":dotationsAsToday,
-            "vna":totalValue - dotationsAsToday
+            "totalValue": totalValue,
+            "dotationsAsToday": dotationsAsToday,
+            "vna": totalValue - dotationsAsToday
         }
         // console.log(totalValue);
         this._assets_value.next(assetsValue);
-        localStorage.setItem('totalAssetsValue',String(totalValue));
+        localStorage.setItem('totalAssetsValue', String(totalValue));
         this._updateStoredAssets(this.assets);
         // console.log(dotationsAsToday);
     }
 
-    getTotalAssetsValue(){
+    getTotalAssetsValue() {
         const totalValue = Number(localStorage.getItem('totalAssetsValue'));
         const dotationsAsToday = this.computingSvc.getDotationsAsTodayOfAssets(this.assets);
         const assetsValue = {
-            "totalValue":totalValue,
-            "dotationsAsToday":dotationsAsToday,
-            "vna":totalValue - dotationsAsToday
+            "totalValue": totalValue,
+            "dotationsAsToday": dotationsAsToday,
+            "vna": totalValue - dotationsAsToday
         }
         return assetsValue;
     }
@@ -154,7 +156,7 @@ export class DataService {
             const index = this.assets.indexOf(asset);
             this.assets[index] = concernedAsset;
             this.assets = [...this.assets];
-            this.assetDetailsUpdated.emit({type:"updated",asset:concernedAsset});
+            this.assetDetailsUpdated.emit({ type: "updated", asset: concernedAsset });
             this.updateTotalAssetsValue();
             return true;
         }
@@ -166,7 +168,7 @@ export class DataService {
     removeAsset(assetId: number) {
         const concernedAsset = this.getAsset(assetId);
         this.assets = this.assets.filter(asset => asset.id !== assetId);
-        this.assetDetailsUpdated.emit({type:"deleted",asset:concernedAsset});
+        this.assetDetailsUpdated.emit({ type: "deleted", asset: concernedAsset });
         this.updateTotalAssetsValue();
     }
 

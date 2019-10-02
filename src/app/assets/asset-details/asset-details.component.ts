@@ -7,6 +7,7 @@ import { ModalService } from 'src/app/shared/services/modal.service';
 import { isUndefined } from 'util';
 import { AssetDotation } from 'src/app/shared/interfaces/asset-dotation';
 import { ComputingService } from 'src/app/shared/services/computing.service';
+import { ExcelService } from 'src/app/shared/services/excel.service';
 // import { Observable } from 'rxjs';
 
 @Component({
@@ -17,7 +18,7 @@ import { ComputingService } from 'src/app/shared/services/computing.service';
 export class AssetDetailsComponent implements OnInit, OnDestroy {
     notFound: boolean = false;
 
-    constructor(private dataService: DataService, private computeSvc: ComputingService, private modalService: ModalService, public navSvc: NavigationService, private activatedRoute: ActivatedRoute) { }
+    constructor(private dataService: DataService, private computeSvc: ComputingService, private excelService:ExcelService, private modalService: ModalService, public navSvc: NavigationService, private activatedRoute: ActivatedRoute) { }
     concernedItem: UserAsset;
     assetEvtSubscriber: any;
     listOfData: AssetDotation[];
@@ -69,6 +70,13 @@ export class AssetDetailsComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.assetEvtSubscriber.unsubscribe();
+    }
+
+    exportAsXlsx(){
+        // this.excelService.exportAsExcelFile([this.concernedItem], 'Asset Details');
+        // console.log(this.concernedItem,this.listOfData);
+        // this.excelService.exportAsExcelFile(this.listOfData, 'Asset Amortization',true);
+        this.excelService.exportAssetDetails(this.concernedItem,this.listOfData);
     }
 
 }
